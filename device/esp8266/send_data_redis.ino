@@ -2,13 +2,14 @@
 
 const char *ssid = "ssid";
 const char *passw = "passw";
-#define host "<your ip>"
-#define port <your port>
+#define host "ip"
+#define port 6379
 
-#define redis_password "isaranu"
+#define redis_password "authpassw"
 
 int cnt=0;
 String response;
+String deviceid = "wemos_1";
 
 WiFiClient redis;
 
@@ -64,6 +65,31 @@ void pushRedis(String key, String data){
   }
 }
 
+void pubRedis(String channelname, String msg){
+  if(redis.connect(host, port)){
+
+    String s_payload = "*3\r\n";
+           s_payload += "$7\r\n";
+           s_payload += "PUBLISH\r\n";
+           s_payload += "$" + String(channelname.length()) + "\r\n";
+           s_payload += channelname + "\r\n";
+           s_payload += "$" + String(msg.length()) + "\r\n";
+           s_payload += msg + "\r\n";
+           
+    Serial.println(s_payload);
+    redis.print(s_payload);
+
+    //delay(100);
+    /*
+    response = "";
+    while(redis.available()){
+      response = redis.readStringUntil('\n');
+    }
+    Serial.println("REDIS Server response = " + response);
+    */
+  }
+}
+
 void setup(){
   
   Serial.begin(115200);
@@ -81,7 +107,8 @@ void setup(){
 }
 
 void loop(){
-  pushRedis("Testkey:abc", "data:" + String(cnt));
+  //pushRedis("Testkey",String(cnt));
+  pubRedis("iotroom", deviceid + ":" + String(cnt));
   cnt++;
   delay(500);
 }
