@@ -1,9 +1,9 @@
 var redis = require("redis"),
     client = redis.createClient();
+    iot = redis.createClient();
 
-// if you'd like to select database 3, instead of 0 (default), call
-// client.select(3, function() { /* ... */ });
-
+//###### SIMPLE Code #######
+/*
 client.on("error", function (err) {
     console.log("Error " + err);
 });
@@ -16,5 +16,21 @@ client.hkeys("hash key", function (err, replies) {
     replies.forEach(function (reply, i) {
         console.log("    " + i + ": " + reply);
     });
-    client.quit();
+    //client.quit();
 });
+
+client.lrange('Testkey', 0, 100, function(err, reply) {
+    console.log(reply);
+});
+*/
+
+//###### PUB-SUB ######
+iot.on('message', function(channel, message){
+  console.log(message);
+});
+
+iot.on('subscribe', function(channel, count){
+  console.log('iot sub channel : ' + channel + ' | total : ' + count + ' connections');
+});
+
+iot.subscribe('iotroom');
