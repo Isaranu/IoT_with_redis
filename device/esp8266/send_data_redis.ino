@@ -1,11 +1,11 @@
 #include "ESP8266WiFi.h"
 
-const char *ssid = "ssid";
-const char *passw = "passw";
-#define host "ip"
+const char *ssid = "your-ssid";
+const char *passw = "your-wifi-passw";
+#define host "your-ip-address"
 #define port 6379
 
-#define redis_password "authpassw"
+#define redis_password "your-redis-auth"
 
 int cnt=0;
 String response;
