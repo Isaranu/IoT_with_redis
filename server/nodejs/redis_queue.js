@@ -9,12 +9,12 @@ var Promise = require('promise');
 var qname = "iot";
 var qnameexisted_flag = false;
 
-//###### PUB-SUB ######
+//###### PUB-SUB for IoT connections ######
 iot.on('message', function(channel, message){
   console.log('IoT channel : ' + channel + ' | msg = ' + message);
   sendMessage(qname, message);
-  //receiveMessage(qname);
-  popMessage(qname);
+  //receiveMessage(qname); //--> get message in queue but not delete it from queue
+  popMessage(qname); //--> get message in queue and deleted it !
   getStat(qname);
 });
 
@@ -28,11 +28,17 @@ iot.subscribe('iotroom');
 
 async function queueManagement(){
   await deleteQueue(qname);
-  await listQueues();
-  await createQueue(qname);
+  await listQueues().then(function(result){
+    if(result.length == 0){
+      createQueue(qname);
+    }
+  }, function(err){
+      console.log(err);
+  });
 }
 
 queueManagement();
+
 
 // Check hidden msg in queue
 /*
